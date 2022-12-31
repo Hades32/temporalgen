@@ -44,8 +44,7 @@ This tool accomplishes this by generating some simple stubs for you. You can hav
 
 ## Usage
 
-Install with `go install github.com/Hades32/temporalgen@latest
-`
+Install with `go install github.com/Hades32/temporalgen@latest`
 
 Now, just add a Go generate comment with the type you want to create stubs for
 ```go
@@ -57,4 +56,4 @@ type Activities struct {
 
 Now you can run `go generate` in your package (or `go generate ./...` for your whole module) and a `activities.gen.go` file will be generated.
 
-We suggest running generate locally and checking the result into source control like any other source-code.
+I suggest running generate locally and checking the result into source control like any other source-code.
