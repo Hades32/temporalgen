@@ -1,5 +1,9 @@
 # Stub Generation for Temporal Activities
 
+> Beware, that this code is currently PoC quality, so expect some issues when using it - please report them!
+>
+> But this shouldn't stop you from using it, as the _generated code_ is perfectly fine and easy to inspect.
+
 When calling Temporal activities in Go you lose type safety, and it's a bit of boilerplate code.
 
 But imagine instead of this
