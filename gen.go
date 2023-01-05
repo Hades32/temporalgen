@@ -107,7 +107,7 @@ func printStubs(p *packages.Package, starTypeName string, out *os.File, typeName
 			if getTypeName(funcDecl.Recv.List[0].Type) != starTypeName {
 				continue
 			}
-			fmt.Fprintf(out, "func (s *%sStub) %sAndGet(ctx workflow.Context", typeName, funcDecl.Name)
+			fmt.Fprintf(out, "func (s *%sStub) %sSync(ctx workflow.Context", typeName, funcDecl.Name)
 			if len(funcDecl.Type.Params.List) > 0 {
 				fmt.Fprint(out, ", ")
 				printParams(out, funcDecl.Type.Params, true, false)
