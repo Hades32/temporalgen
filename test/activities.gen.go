@@ -10,23 +10,23 @@ type ActivitiesStub struct {
 	a *Activities
 }
 
-func (s *ActivitiesStub) MarkReadyForUploadsAndGet(ctx workflow.Context, jobID string) (err error) {
+func (s *ActivitiesStub) MarkReadyForUploadsExec(ctx workflow.Context, jobID string) (err error) {
 	f := workflow.ExecuteActivity(ctx, s.a.MarkReadyForUploads, jobID)
 	return f.Get(ctx, nil)
 }
 
-func (s *ActivitiesStub) MarkReadyForUploads(ctx workflow.Context, jobID string) workflow.Future {
+func (s *ActivitiesStub) MarkReadyForUploadsStart(ctx workflow.Context, jobID string) workflow.Future {
 	f := workflow.ExecuteActivity(ctx, s.a.MarkReadyForUploads, jobID)
 	return f
 }
 
-func (s *ActivitiesStub) DoSomethingAndGet(ctx workflow.Context, jobID string, i *json.RawMessage) (string, error) {
+func (s *ActivitiesStub) DoSomethingExec(ctx workflow.Context, jobID string, i *json.RawMessage) (string, error) {
 	f := workflow.ExecuteActivity(ctx, s.a.DoSomething, jobID, i)
 	var res string
 	return res, f.Get(ctx, &res)
 }
 
-func (s *ActivitiesStub) DoSomething(ctx workflow.Context, jobID string, i *json.RawMessage) workflow.Future {
+func (s *ActivitiesStub) DoSomethingStart(ctx workflow.Context, jobID string, i *json.RawMessage) workflow.Future {
 	f := workflow.ExecuteActivity(ctx, s.a.DoSomething, jobID, i)
 	return f
 }
