@@ -34,7 +34,7 @@ func NiceWorkflow(ctx workflow.Context) (r *WfResult, err error) {
 		ScheduleToCloseTimeout: 10 * time.Second,
 	})
 	// a.DoSomething(ctx, workflow.GetInfo(ctx).WorkflowExecution.ID, "maybe a string?") 🪲 wrong argument!
-	result, err := a.DoSomethingAndGet(ctx, workflow.GetInfo(ctx).WorkflowExecution.ID, &echo.Group{})
+	result, err := a.DoSomethingExec(ctx, workflow.GetInfo(ctx).WorkflowExecution.ID, &echo.Group{})
 	if err != nil {
 		return nil, err
 	}
