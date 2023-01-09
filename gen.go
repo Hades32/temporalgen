@@ -37,7 +37,7 @@ func run(typeName string, starTypeName string) {
 	}
 	out := os.Stdout
 	if !*dryRun {
-		out, err = os.OpenFile(strings.ToLower(typeName)+".gen.go", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0660)
+		out, err = os.OpenFile(strings.ToLower(typeName)+".gen.go", os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0o660)
 		if err != nil {
 			panic(err)
 		}
@@ -128,8 +128,8 @@ func printStubs(p *packages.Package, starTypeName string, out *os.File, typeName
 			}
 			fmt.Fprint(out, ")\n")
 			if len(funcDecl.Type.Results.List) > 1 {
-				fmt.Fprintf(out, "\tvar res %s\n", getTypeName(funcDecl.Type.Results.List[0].Type))
-				fmt.Fprint(out, "\treturn res, f.Get(ctx, &res)\n")
+				fmt.Fprintf(out, "\tvar _res %s\n", getTypeName(funcDecl.Type.Results.List[0].Type))
+				fmt.Fprint(out, "\treturn _res, f.Get(ctx, &_res)\n")
 			} else {
 				fmt.Fprint(out, "\treturn f.Get(ctx, nil)\n")
 			}
