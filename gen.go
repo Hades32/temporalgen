@@ -81,10 +81,14 @@ func usedImports(p *packages.Package, starTypeName string) (imports []string) {
 					firstParam = false
 					continue
 				}
-				pkgPathSet[getTypePkg(pkgLookup, field.Type)] = true
+				for _, t := range getTypePkg(pkgLookup, field.Type) {
+					pkgPathSet[t] = true
+				}
 			}
 			for _, field := range funcDecl.Type.Results.List {
-				pkgPathSet[getTypePkg(pkgLookup, field.Type)] = true
+				for _, t := range getTypePkg(pkgLookup, field.Type) {
+					pkgPathSet[t] = true
+				}
 			}
 		}
 	}
@@ -160,19 +164,27 @@ func getTypeName(t ast.Expr) (typeName string) {
 		typeName = "*" + getTypeName(typ.X)
 	} else if sel, ok := t.(*ast.SelectorExpr); ok {
 		typeName = getTypeName(sel.X) + "." + sel.Sel.Name
+	} else if mp, ok := t.(*ast.MapType); ok {
+		return fmt.Sprintf("map[%s]%s", getTypeName(mp.Key), getTypeName(mp.Value))
+	} else if arr, ok := t.(*ast.ArrayType); ok {
+		typeName = "[]" + getTypeName(arr.Elt)
 	} else {
 		fmt.Printf("what is this %t", t)
 	}
 	return typeName
 }
 
-func getTypePkg(imports map[string]string, t ast.Expr) (pgkName string) {
+func getTypePkg(imports map[string]string, t ast.Expr) (pgkNames []string) {
 	if _, ok := t.(*ast.Ident); ok {
-		return ""
+		return []string{""}
 	} else if typ, ok := t.(*ast.StarExpr); ok {
 		return getTypePkg(imports, typ.X)
 	} else if sel, ok := t.(*ast.SelectorExpr); ok {
-		return imports[getTypeName(sel.X)]
+		return []string{imports[getTypeName(sel.X)]}
+	} else if mp, ok := t.(*ast.MapType); ok {
+		return []string{imports[getTypeName(mp.Key)], imports[getTypeName(mp.Value)]}
+	} else if arr, ok := t.(*ast.ArrayType); ok {
+		return []string{imports[getTypeName(arr.Elt)]}
 	} else {
 		panic(fmt.Sprintf("unexpected node when searching type package: %s", t))
 	}
