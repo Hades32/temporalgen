@@ -53,7 +53,8 @@ func run(typeName string, starTypeName string) {
 			fmt.Fprint(out, "\t\"", imp, "\"\n")
 		}
 		fmt.Fprintln(out, ")")
-		fmt.Fprintf(out, "type %sStub struct {\n\ta *%s\n}\n\n", typeName, typeName)
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "type %sStub struct {\n\ta *%s\n}\n", typeName, typeName)
 		printStubs(p, starTypeName, out, typeName)
 	}
 }
@@ -111,6 +112,7 @@ func printStubs(p *packages.Package, starTypeName string, out *os.File, typeName
 			if getTypeName(funcDecl.Recv.List[0].Type) != starTypeName {
 				continue
 			}
+			fmt.Fprintln(out)
 			fmt.Fprintf(out, "func (s *%sStub) %sExec(ctx workflow.Context", typeName, funcDecl.Name)
 			if len(funcDecl.Type.Params.List) > 0 {
 				fmt.Fprint(out, ", ")
@@ -152,7 +154,7 @@ func printStubs(p *packages.Package, starTypeName string, out *os.File, typeName
 			}
 			fmt.Fprint(out, ")\n")
 			fmt.Fprint(out, "\treturn f\n")
-			fmt.Fprint(out, "}\n\n")
+			fmt.Fprint(out, "}\n")
 		}
 	}
 }
