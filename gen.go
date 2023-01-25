@@ -12,8 +12,10 @@ import (
 )
 
 var (
-	typeNameP = flag.String("type", "", "name of type to generate stubs for")
-	dryRun    = flag.Bool("dry", false, "just print to stdout")
+	typeNameP   = flag.String("type", "", "name of type to generate stubs for")
+	execSuffix  = flag.String("execSuffix", "Exec", "suffix of the generated 'Exec' methods")
+	startSuffix = flag.String("startSuffix", "Start", "suffix of the generated 'Start' methods")
+	dryRun      = flag.Bool("dry", false, "just print to stdout")
 )
 
 func main() {
@@ -115,7 +117,7 @@ func printStubs(p *packages.Package, starTypeName string, out *os.File, typeName
 				continue
 			}
 			fmt.Fprintln(out)
-			fmt.Fprintf(out, "func (s *%sStub) %sExec(ctx workflow.Context", typeName, funcDecl.Name)
+			fmt.Fprintf(out, "func (s *%sStub) %s%s(ctx workflow.Context", typeName, funcDecl.Name, *execSuffix)
 			if len(funcDecl.Type.Params.List) > 0 {
 				fmt.Fprint(out, ", ")
 				printParams(out, funcDecl.Type.Params, true, false)
@@ -143,7 +145,7 @@ func printStubs(p *packages.Package, starTypeName string, out *os.File, typeName
 			}
 			fmt.Fprint(out, "}\n\n")
 
-			fmt.Fprintf(out, "func (s *%sStub) %sStart(ctx workflow.Context", typeName, funcDecl.Name)
+			fmt.Fprintf(out, "func (s *%sStub) %s%s(ctx workflow.Context", typeName, funcDecl.Name, *startSuffix)
 			if len(funcDecl.Type.Params.List) > 0 {
 				fmt.Fprint(out, ", ")
 				printParams(out, funcDecl.Type.Params, true, false)
