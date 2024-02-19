@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 )
 
-//go:generate temporalgen -type Activities
+//go:generate ../temporalgen -type Activities
 type Activities struct {
 }
 

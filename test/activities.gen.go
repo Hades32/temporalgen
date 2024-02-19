@@ -3,9 +3,10 @@
 package test
 
 import (
-	"go.temporal.io/sdk/workflow"
 	"encoding/json"
+	"go.temporal.io/sdk/workflow"
 )
+
 type ActivitiesStub struct {
 	a *Activities
 }
@@ -22,12 +23,11 @@ func (s *ActivitiesStub) MarkReadyForUploadsStart(ctx workflow.Context, jobID st
 
 func (s *ActivitiesStub) DoSomethingExec(ctx workflow.Context, jobID string, i *json.RawMessage) (string, error) {
 	f := workflow.ExecuteActivity(ctx, s.a.DoSomething, jobID, i)
-	var res string
-	return res, f.Get(ctx, &res)
+	var _res string
+	return _res, f.Get(ctx, &_res)
 }
 
 func (s *ActivitiesStub) DoSomethingStart(ctx workflow.Context, jobID string, i *json.RawMessage) workflow.Future {
 	f := workflow.ExecuteActivity(ctx, s.a.DoSomething, jobID, i)
 	return f
 }
-
