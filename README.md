@@ -1,5 +1,62 @@
 # Stub Generation for Temporal Activities
 
+## DEPRECATED
+
+Since the introduction fo generics to Go, this repo is for less useful and as running it is releatively slow I now don't recommend it anymore.
+
+Instead I started using simple generic helper methods that you can copy below. The only issue is that you must use a single struct as activity arguments, but this is actually the best way to ensure backwards compatibility anyway.
+
+```go
+func execActivityIO[Tin any, Tout any](ctx workflow.Context, activity func(ctx context.Context, params Tin) (res Tout, err error), input Tin, options ...execActivityOption) (Tout, error) {
+	opts := workflow.GetActivityOptions(ctx)
+	for _, opt := range options {
+		opt(&opts)
+	}
+	ctx = workflow.WithActivityOptions(ctx, opts)
+	f := workflow.ExecuteActivity(ctx, activity, input)
+	var res Tout
+	err := f.Get(ctx, &res)
+	if err != nil {
+		return res, fmt.Errorf("error in activity '%s': %w", utils.FuncName(activity), err)
+	}
+	return res, nil
+}
+
+func execActivity[Tin any](ctx workflow.Context, activity func(ctx context.Context, params Tin) (err error), input Tin, options ...execActivityOption) error {
+	opts := workflow.GetActivityOptions(ctx)
+	for _, opt := range options {
+		opt(&opts)
+	}
+	ctx = workflow.WithActivityOptions(ctx, opts)
+	f := workflow.ExecuteActivity(ctx, activity, input)
+	err := f.Get(ctx, nil)
+	if err != nil {
+		return fmt.Errorf("error in activity '%s': %w", utils.FuncName(activity), err)
+	}
+	return nil
+}
+
+type execActivityOption func(*workflow.ActivityOptions)
+
+func startToClose(dur time.Duration) execActivityOption {
+	return func(ao *workflow.ActivityOptions) {
+		ao.StartToCloseTimeout = dur
+		// fix consistency for overwrites
+		if ao.ScheduleToCloseTimeout < dur {
+			ao.ScheduleToCloseTimeout = dur
+		}
+	}
+}
+
+func scheduleToClose(dur time.Duration) execActivityOption {
+	return func(ao *workflow.ActivityOptions) {
+		ao.ScheduleToCloseTimeout = dur
+	}
+}
+```
+
+## OLD README BELOW
+
 > Beware, that this code is currently PoC quality, so expect some issues when using it - please report them!
 >
 > But this shouldn't stop you from using it, as the _generated code_ is perfectly fine and easy to inspect.
