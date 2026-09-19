@@ -1,8 +1,10 @@
+
+
 # Stub Generation for Temporal Activities
 
 ## DEPRECATED
 
-Since the introduction fo generics to Go, this repo is for less useful and as running it is releatively slow I now don't recommend it anymore.
+Since the introduction of generics to Go, this repo is for less useful and as running it is releatively slow I now don't recommend it anymore.
 
 Instead I started using simple generic helper methods that you can copy below. The only issue is that you must use a single struct as activity arguments, but this is actually the best way to ensure backwards compatibility anyway.
 
